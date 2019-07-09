@@ -59,14 +59,22 @@ if [ -d opencv-3.4.6 ]; then
   echo "** ERROR: opencv-3.4.6 directory already exists"
   exit
 fi
+if [ ! -f opencv_contrib-3.4.6.zip ]; then
+  wget https://github.com/opencv/opencv_contrib/archive/3.4.6.zip -O opencv_contrib-3.4.6.zip
+fi
+if [ -d opencv_contrib-3.4.6.zip ]; then
+  echo "** ERROR: opencv_contrib-3.4.6 directory already exists"
+  exit
+fi
 unzip opencv-3.4.6.zip 
+unzip opencv_contrib-3.4.6.zip
 cd opencv-3.4.6/
 
 echo "** Building opencv..."
 mkdir build
 cd build/
 
-cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_CUDA=ON -D CUDA_ARCH_BIN="5.3" -D CUDA_ARCH_PTX="" -D WITH_CUBLAS=ON -D ENABLE_FAST_MATH=ON -D CUDA_FAST_MATH=ON -D ENABLE_NEON=ON -D WITH_GSTREAMER=ON -D WITH_LIBV4L=ON -D BUILD_opencv_python2=ON -D BUILD_opencv_python3=ON -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D BUILD_EXAMPLES=OFF -D WITH_QT=ON -D WITH_OPENGL=ON ..
+cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_CUDA=ON -D CUDA_ARCH_BIN="5.3" -D CUDA_ARCH_PTX="" -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-3.4.6/modules -D WITH_CUBLAS=ON -D ENABLE_FAST_MATH=ON -D CUDA_FAST_MATH=ON -D ENABLE_NEON=ON -D WITH_GSTREAMER=ON -D WITH_LIBV4L=ON -D BUILD_opencv_python2=ON -D BUILD_opencv_python3=ON -D BUILD_TESTS=OFF -D BUILD_PERF_TESTS=OFF -D BUILD_EXAMPLES=OFF -D WITH_QT=ON -D WITH_OPENGL=ON ..
 make -j3
 sudo make install
 sudo ldconfig
